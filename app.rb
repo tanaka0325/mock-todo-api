@@ -54,4 +54,19 @@ class MockTodoApp < Sinatra::Base
     return {}.to_json
   end
 
+  patch '/todos/:id' do
+    begin
+      todo = Todo.find(params[:id])
+      params.each do |k, v|
+        if todo[k]
+          todo[k] = v
+        end
+      end
+      todo.save
+    rescue => e
+      return "Couldn't update Todo with 'id'=#{params[:id]}"
+    end
+    return todo.to_json
+  end
+
 end
