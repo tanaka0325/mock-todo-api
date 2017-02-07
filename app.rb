@@ -30,4 +30,18 @@ class MockTodoApp < Sinatra::Base
     return todo.to_json
   end
 
+  post '/todos' do
+    todo = Todo.new
+    todo.text = params[:text]
+    todo.date = params[:date]
+    todo.status = params[:status] if params[:status]
+    todo.priority = params[:priority] if params[:priority]
+    begin
+      todo.save!
+    rescue => e
+      return "Couldn't save"
+    end
+    return todo.to_json
+  end
+
 end
