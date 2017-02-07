@@ -44,4 +44,14 @@ class MockTodoApp < Sinatra::Base
     return todo.to_json
   end
 
+  delete '/todos/:id' do
+    begin
+      todo = Todo.find(params[:id])
+      todo.destroy
+    rescue => e
+      return "Couldn't delete Todo with 'id'=#{params[:id]}"
+    end
+    return {}.to_json
+  end
+
 end
