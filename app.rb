@@ -1,9 +1,12 @@
 require 'sinatra/base'
 require 'sinatra/reloader'
+require 'logger'
 
 require './models/todos.rb'
 
 class MockTodoApp < Sinatra::Base
+  @@logger = Logger.new('./log/error.log')
+
   configure :development do
     register Sinatra::Reloader
   end
@@ -25,6 +28,7 @@ class MockTodoApp < Sinatra::Base
     begin
       todo = Todo.find(params[:id])
     rescue => e
+      @@logger.error e.inspect
       return "Couldn't find Todo with 'id'=#{params[:id]}"
     end
     return todo.to_json
@@ -36,6 +40,7 @@ class MockTodoApp < Sinatra::Base
     begin
       todo = Todo.create(todo_params["task"])
     rescue => e
+      @@logger.error e.inspect
       return "Couldn't save"
     end
     return todo.to_json
@@ -46,6 +51,7 @@ class MockTodoApp < Sinatra::Base
       todo = Todo.find(params[:id])
       todo.destroy
     rescue => e
+      @@logger.error e.inspect
       return "Couldn't delete Todo with 'id'=#{params[:id]}"
     end
     return {}.to_json
@@ -61,6 +67,7 @@ class MockTodoApp < Sinatra::Base
       end
       todo.save
     rescue => e
+      @@logger.error e.inspect
       return "Couldn't update Todo with 'id'=#{params[:id]}"
     end
     return todo.to_json
