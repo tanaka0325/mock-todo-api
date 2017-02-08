@@ -31,13 +31,10 @@ class MockTodoApp < Sinatra::Base
   end
 
   post '/todos' do
-    todo = Todo.new
-    todo.text = params[:text]
-    todo.date = params[:date]
-    todo.status = params[:status] if params[:status]
-    todo.priority = params[:priority] if params[:priority]
+    request.body.rewind
+    todo_params = JSON.parse request.body.read
     begin
-      todo.save!
+      todo = Todo.create(todo_params["task"])
     rescue => e
       return "Couldn't save"
     end
